@@ -39,7 +39,7 @@ public class LogReader {
         // loading files by last modified descending
         for (File file : sortedFileListByLastModifiedDescending) {
             boolean isThereAtLeastOneLog = false;
-            long startTime = System.currentTimeMillis();
+            long start = System.nanoTime();
             System.out.println("File name:\t\t\t\t\t\t\t" + file.getName());
             int uniqueLibrariesCounter = 0;
             LocalDateTime maxDateTime = LocalDateTime.parse(MIN_LOCAL_DATE_TIME, formatter);
@@ -77,8 +77,8 @@ public class LogReader {
                         isThereAtLeastOneLog = true;
                     }
                 }
-                long endTime = System.currentTimeMillis();
-                long elapsedTime = endTime - startTime;
+                long end = System.nanoTime();
+                long elapsedTime = end - start;
 
                 // print result of one file
                 printResult(minDateTime, maxDateTime, elapsedTime, uniqueLibrariesCounter, severitiesHashMap, isThereAtLeastOneLog);
@@ -90,12 +90,12 @@ public class LogReader {
 
     public static void printResult(LocalDateTime minDateTime, LocalDateTime maxDateTime, long elapsedTime, int uniqueLibrariesCounter, HashMap<String, Integer> severitiesHashMap, boolean isThereAtLeastOneLog) {
         if(!isThereAtLeastOneLog) {
-            System.out.println("No logs found in this file");
+            System.out.println("No logs found in this file\n");
             return;
         }
-//        System.out.println("najwiekszy: " + maxDateTime);
-//        System.out.println("najmniejszy: " + minDateTime);
-        System.out.println("interpreting time:\t\t\t\t\t" + elapsedTime + "ms");
+
+        // time in nanoseconds and miliseconds (without rounding)
+        System.out.println("interpreting time:\t\t\t\t\t" + elapsedTime + "ns (" + elapsedTime/1000000 + "ms)");
 
         Duration timeBetween = Duration.between(minDateTime, maxDateTime);
         long days = timeBetween.toDays();
